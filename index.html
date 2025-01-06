@@ -8,15 +8,17 @@
 </head>
 <body>
     <h1>Pythagorean Theorem Calculator</h1>
+    <p>**Note:** Hypotenuse (Side C) must be greater than both Altitude (Side A) and Base (Side B).</p>
     <div id="calculator">
-        <label for="sideA">Side A:</label>
-        <input type="number" id="sideA" placeholder="Enter side length">
-        <label for="sideB">Side B:</label>
-        <input type="number" id="sideB" placeholder="Enter side length">
-        <label for="sideC">Side C:</label>
-        <input type="number" id="sideC" placeholder="Enter side length (optional)">
+        <label for="sideA">Altitude (Side A):</label>
+        <input type="number" id="sideA" placeholder="Enter Altitude">
+        <label for="sideB">Base (Side B):</label>
+        <input type="number" id="sideB" placeholder="Enter Base">
+        <label for="sideC">Hypotenuse (Side C):</label>
+        <input type="number" id="sideC" placeholder="Enter Hypotenuse">
         <button onclick="calculate()">Calculate</button>
         <p id="result"></p>
+        <canvas id="triangleCanvas" width="200" height="200"></canvas> 
     </div>
     <script src="script.js"></script>
 </body>
