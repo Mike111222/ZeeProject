@@ -10,7 +10,7 @@ function calculate() {
         return;
     }
 
-    if (altitude < 0 || base < 0 || hypotenuse < 0) {
+    if (altitude <= 0 || base <= 0 || hypotenuse <= 0) {
         document.getElementById('result').innerHTML = "Please enter valid positive numbers for sides.";
         return;
     }
@@ -27,17 +27,20 @@ function calculate() {
     if (isNaN(altitude)) {
         missingSide = 'Altitude';
         result = Math.sqrt(Math.pow(hypotenuse, 2) - Math.pow(base, 2));
+        altitude = result; // Set the calculated value
     } else if (isNaN(base)) {
         missingSide = 'Base';
         result = Math.sqrt(Math.pow(hypotenuse, 2) - Math.pow(altitude, 2));
+        base = result; // Set the calculated value
     } else if (isNaN(hypotenuse)) {
         missingSide = 'Hypotenuse';
         result = Math.sqrt(Math.pow(altitude, 2) + Math.pow(base, 2));
+        hypotenuse = result; // Set the calculated value
     } else {
         // Check if it's a valid right triangle (all sides provided)
-        if (Math.pow(altitude, 2) + Math.pow(base, 2) === Math.pow(hypotenuse, 2)) {
+        if (Math.abs(Math.pow(altitude, 2) + Math.pow(base, 2) - Math.pow(hypotenuse, 2)) < 1e-9) {
             document.getElementById('result').innerHTML = "This is a valid right triangle.";
-            drawTriangle(altitude, base, hypotenuse); // Draw triangle if valid
+            drawTriangle(altitude, base); // Draw triangle if valid
         } else {
             document.getElementById('result').innerHTML = "This is not a valid right triangle.";
         }
@@ -46,29 +49,49 @@ function calculate() {
 
     // Display the calculated result
     document.getElementById('result').innerHTML = `The length of ${missingSide} is: ${result.toFixed(2)}`;
+    drawTriangle(altitude, base); // Draw triangle with calculated values
 }
 
-function drawTriangle(altitude, base, hypotenuse) {
+// Function to draw the right triangle on the canvas
+function drawTriangle(altitude, base) {
     const canvas = document.getElementById('triangleCanvas');
     const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height); 
+
+    // Clear the canvas before drawing
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Debugging logs for coordinate and scaling values
+    console.log(`Altitude: ${altitude}, Base: ${base}`);
 
     // Calculate scale to fit triangle within canvas
-    const scale = Math.min(canvas.width / base, canvas.height / altitude);
+    const padding = 40; // Padding to ensure the triangle is not cut off
+    const scale = Math.min((canvas.width - 2 * padding) / base, (canvas.height - 2 * padding) / altitude);
 
-    // Calculate coordinates of triangle vertices
-    const x1 = canvas.width / 2; // Apex (right angle)
-    const y1 = canvas.height - (altitude * scale);
-    const x2 = x1 - (base * scale); // Base left
-    const y2 = canvas.height;
-    const x3 = x1; // Base right
-    const y3 = canvas.height;
+    // Define coordinates for the triangle
+    const x0 = padding; // Bottom-left corner (base starts here)
+    const y0 = canvas.height - padding;
+    const x1 = x0; // Top-left corner (altitude ends here)
+    const y1 = y0 - altitude * scale;
+    const x2 = x0 + base * scale; // Bottom-right corner
+    const y2 = y0;
 
-    // Draw triangle
+    // Debugging logs for triangle vertices
+    console.log(`Vertices: (${x0}, ${y0}), (${x1}, ${y1}), (${x2}, ${y2})`);
+
+    // Draw the triangle
     ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.lineTo(x3, y3);
-    ctx.closePath();
+    ctx.moveTo(x0, y0); // Move to the first vertex
+    ctx.lineTo(x1, y1); // Draw line to the second vertex
+    ctx.lineTo(x2, y2); // Draw line to the third vertex
+    ctx.closePath(); // Close the triangle
+    ctx.strokeStyle = "blue"; // Set line color
+    ctx.lineWidth = 2; // Set line width
     ctx.stroke();
+
+    // Label the sides of the triangle
+    ctx.font = "14px Arial";
+    ctx.fillStyle = "black";
+    ctx.fillText("A", (x0 + x1) / 2 - 10, (y0 + y1) / 2); // Altitude label
+    ctx.fillText("B", (x0 + x2) / 2, y0 + 15); // Base label
+    ctx.fillText("C", (x1 + x2) / 2, (y1 + y2) / 2 - 10); // Hypotenuse label
 }
