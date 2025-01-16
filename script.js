@@ -1,3 +1,6 @@
+// Add an event listener to the "Calculate" button
+document.getElementById('calculateButton').addEventListener('click', calculate);
+
 function calculate() {
     // Get input values from the HTML elements
     let altitude = parseFloat(document.getElementById('sideA').value);
@@ -60,9 +63,6 @@ function drawTriangle(altitude, base) {
     // Clear the canvas before drawing
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Debugging logs for coordinate and scaling values
-    console.log(`Altitude: ${altitude}, Base: ${base}`);
-
     // Calculate scale to fit triangle within canvas
     const padding = 40; // Padding to ensure the triangle is not cut off
     const scale = Math.min((canvas.width - 2 * padding) / base, (canvas.height - 2 * padding) / altitude);
@@ -74,9 +74,6 @@ function drawTriangle(altitude, base) {
     const y1 = y0 - altitude * scale;
     const x2 = x0 + base * scale; // Bottom-right corner
     const y2 = y0;
-
-    // Debugging logs for triangle vertices
-    console.log(`Vertices: (${x0}, ${y0}), (${x1}, ${y1}), (${x2}, ${y2})`);
 
     // Draw the triangle
     ctx.beginPath();
